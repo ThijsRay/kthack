@@ -9,7 +9,6 @@ All rights reserved.
 
 from .mceditlib.worldeditor import WorldEditor
 
-
 def main():
     "Entry point of this utility."
 
