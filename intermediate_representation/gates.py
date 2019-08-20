@@ -35,7 +35,7 @@ class Point:
 
     def add(
             self,
-            dx, # int
+            dx,
             dy, # int
             dz  # int
         ):
@@ -80,49 +80,8 @@ class Module:
         raise NotImplementedError()
 
 
-class Operation:
-    """
-    Class that defines the AST types
-    """
-    def simplify(self):
-        raise NotImplementedError("Class %s doesn't implement simplyfy()" % (self.__class__.__name__))
 
-
-class And(Operation, Module):
-    def __init__(self, x, y):
-        self.x = x  # Operation
-        self.y = y  # Operation
-
-    def simplify(self):
-        And(self.x.simplify(), self.y.simplify())
-
-
-class Or(Operation, Module):
-    def __init__(self, x, y):
-        self.x = x  # Operation
-        self.y = y  # Operation
-
-    def simplify(self):
-        Or(self.x.simplify(), self.y.simplify())
-
-
-class Not(Operation, Module):
-    def __init__(self, x):
-        self.x = x  # Operation
-
-    def simplify(self):
-        Not(self.x.simplify())
-
-
-class Terminal(Operation, Module):
-    def __init__(self, identifier):
-        self.identifier = identifier  # String
-
-    def simplify(self):
-        Terminal(self.identifier)
-
-
-class NOT(Module):
+class NotModule(Module):
     """
     Logical NOT gate.
     """
@@ -140,17 +99,17 @@ class NOT(Module):
             "Y": Point(),
         }
 
-        super(NOT, self).__init__(
+        super(NotModule, self).__init__(
             origin,
-            __UNIFORM_WIDTH,
-            __UNIFORM_HEIGHT,
-            __UNIFORM_DEPTH,
+            __UNIFORM_X_SIZE,
+            __UNIFORM_Y_SIZE,
+            __UNIFORM_Z_SIZE,
             inputs,
             outputs
         )
 
 
-class AND(Module):
+class AndModule(Module):
     """
     Logical AND gate.
     """
@@ -169,17 +128,17 @@ class AND(Module):
             "Y": Point(-2, 1, 0),
         }
 
-        super(AND, self).__init__(
+        super(AndModule, self).__init__(
             origin,
-            __UNIFORM_WIDTH,
-            __UNIFORM_HEIGHT,
-            __UNIFORM_DEPTH,
+            __UNIFORM_X_SIZE,
+            __UNIFORM_Y_SIZE,
+            __UNIFORM_Z_SIZE,
             inputs,
             outputs
         )
 
 
-class OR(Module):
+class OrModule(Module):
     """
     Logical OR gate.
     """
@@ -198,17 +157,17 @@ class OR(Module):
             "Y": Point(-2, 1, 0),
         }
 
-        super(OR, self).__init__(
+        super(OrModule, self).__init__(
             origin,
-            __UNIFORM_WIDTH,
-            __UNIFORM_HEIGHT,
-            __UNIFORM_DEPTH,
+            __UNIFORM_X_SIZE,
+            __UNIFORM_Y_SIZE,
+            __UNIFORM_Z_SIZE,
             inputs,
             outputs
         )
 
 
-class INPUT(Module):
+class InputModule(Module):
     """
     User input.
     """
@@ -224,21 +183,14 @@ class INPUT(Module):
             "Y": Point(-2, 1, 0),
         }
 
-        super(OR, self).__init__(
+        super(InputModule, self).__init__(
             origin,
-            __UNIFORM_WIDTH,
-            __UNIFORM_HEIGHT,
-            __UNIFORM_DEPTH,
+            __UNIFORM_X_SIZE,
+            __UNIFORM_Y_SIZE,
+            __UNIFORM_Z_SIZE,
             inputs,
             outputs
         )
 
 
-if __name__ == "__main__":
 
-    input = And(Or(Or("x", And("y", "z")), "x"), Or("x", Not(And("a", "x"))))
-    input.simplify()
-
-
-
-    print("Hey")
