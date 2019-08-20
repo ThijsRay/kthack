@@ -3,11 +3,10 @@ Takes the AST from the compiler frontend and
 turns it into something usable by save file creator.
 """
 
-
 # Universal constants
-__UNIFORM_WIDTH  = 7
-__UNIFORM_HEIGHT = 4
-__UNIFORM_DEPTH  = 7
+__UNIFORM_X_SIZE = 5
+__UNIFORM_Y_SIZE = 4
+__UNIFORM_Z_SIZE = 4
 
 
 class Point:
@@ -25,7 +24,6 @@ class Point:
         self.y = y
         self.z = z
 
-
     def add(
             self,
             point # Point
@@ -34,7 +32,6 @@ class Point:
         y = self.y + point.y
         z = self.z + point.z
         return Point(x, y, z)
-
 
     def add(
             self,
@@ -45,7 +42,7 @@ class Point:
         return self.add(Point(dx, dy, dz))
 
 
-class Module():
+class Module:
     """
     A rectangular prism in the three dimensional space.
     Mostly used to represent a logic gate.
@@ -58,30 +55,71 @@ class Module():
     def __init__(
             self,
             origin, # Point
-            width,  # int
-            height, # int
-            depth,  # int
+            x_size,  # int
+            y_size, # int
+            z_size,  # int
             inputs, # dict
             outputs # dict
         ):
 
         self.origin = origin
-        self.width = width
-        self.height = height
-        self.depth = depth
+        self.x_size = x_size
+        self.y_size = y_size
+        self.z_size = z_size
 
         # A good check would be to control that inputs and outputs
         # do not run out of module bounds here.
         self.inputs = inputs
         self.outputs = outputs
 
-
-    def to_blocks():
+    def to_blocks(self):
         """
         Used to turn the module into a three dimensional 'matrix'
         of (block type, coordinates) pairs.
         """
         raise NotImplementedError()
+
+
+class Operation:
+    """
+    Class that defines the AST types
+    """
+    def simplify(self):
+        raise NotImplementedError("Class %s doesn't implement simplyfy()" % (self.__class__.__name__))
+
+
+class And(Operation, Module):
+    def __init__(self, x, y):
+        self.x = x  # Operation
+        self.y = y  # Operation
+
+    def simplify(self):
+        And(self.x.simplify(), self.y.simplify())
+
+
+class Or(Operation, Module):
+    def __init__(self, x, y):
+        self.x = x  # Operation
+        self.y = y  # Operation
+
+    def simplify(self):
+        Or(self.x.simplify(), self.y.simplify())
+
+
+class Not(Operation, Module):
+    def __init__(self, x):
+        self.x = x  # Operation
+
+    def simplify(self):
+        Not(self.x.simplify())
+
+
+class Terminal(Operation, Module):
+    def __init__(self, identifier):
+        self.identifier = identifier  # String
+
+    def simplify(self):
+        Terminal(self.identifier)
 
 
 class NOT(Module):
@@ -123,12 +161,12 @@ class AND(Module):
         ):
 
         inputs = {
-            "A": Point(0, 1, 2),
-            "B": Point(0, 1, 4),
+            "A": Point(3, 1, 3),
+            "B": Point(1, 1, 3),
         }
 
         outputs = {
-            "Y": Point(6, 1, 3),
+            "Y": Point(-2, 1, 0),
         }
 
         super(AND, self).__init__(
@@ -152,12 +190,12 @@ class OR(Module):
     ):
 
         inputs = {
-            "A": Point(0, 1, 2),
-            "B": Point(0, 1, 4),
+            "A": Point(3, 1, 3),
+            "B": Point(1, 1, 3),
         }
 
         outputs = {
-            "Y": Point(6, 1, 3),
+            "Y": Point(-2, 1, 0),
         }
 
         super(OR, self).__init__(
@@ -180,12 +218,10 @@ class INPUT(Module):
         origin # Point
     ):
 
-        inputs = {
-            "A": Point(0, 1, 2),
-        }
+        inputs = {}
 
         outputs = {
-            "Y": Point(6, 1, 3),
+            "Y": Point(-2, 1, 0),
         }
 
         super(OR, self).__init__(
@@ -198,30 +234,11 @@ class INPUT(Module):
         )
 
 
-class OUTPUT(Module):
-    """
-    User output.
-    """
+if __name__ == "__main__":
 
-    def __init__(
-        self,
-        origin # Point
-    ):
+    input = And(Or(Or("x", And("y", "z")), "x"), Or("x", Not(And("a", "x"))))
+    input.simplify()
 
-        inputs = {
-            "A": Point(0, 1, 2),
-            "B": Point(0, 1, 4),
-        }
 
-        outputs = {
-            "Y": Point(6, 1, 3),
-        }
 
-        super(OR, self).__init__(
-            origin,
-            __UNIFORM_WIDTH,
-            __UNIFORM_HEIGHT,
-            __UNIFORM_DEPTH,
-            inputs,
-            outputs
-        )
+    print("Hey")
