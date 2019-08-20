@@ -26,6 +26,25 @@ class Point:
         self.z = z
 
 
+    def add(
+            self,
+            point # Point
+        ):
+        x = self.x + point.x
+        y = self.y + point.y
+        z = self.z + point.z
+        return Point(x, y, z)
+
+
+    def add(
+            self,
+            dx, # int
+            dy, # int
+            dz  # int
+        ):
+        return self.add(Point(dx, dy, dz))
+
+
 class Module():
     """
     A rectangular prism in the three dimensional space.
