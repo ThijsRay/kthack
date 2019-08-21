@@ -19,6 +19,9 @@ class Operation:
     def module(self):
         raise NotImplementedError("Class %s doesn't implement module()" % (self.__class__.__name__))
 
+    def children(self):
+        raise NotImplementedError("Class %s doesn't implement children()" % (self.__class__.__name__))
+
 
 class And(Operation):
     def __init__(self, x, y):
@@ -34,6 +37,10 @@ class And(Operation):
             self.depth = parent_depth + 1
             self.x.depth(self.depth)
             self.y.depth(self.depth)
+        return self.depth
+
+    def children(self):
+        return [self.x, self.y]
 
 class Or(Operation):
     def __init__(self, x, y):
@@ -49,7 +56,10 @@ class Or(Operation):
             self.depth = parent_depth + 1
             self.x.depth(self.depth)
             self.y.depth(self.depth)
+        return self.depth
 
+    def children(self):
+        return [self.x, self.y]
 
 class Not(Operation):
     def __init__(self, x):
@@ -64,6 +74,8 @@ class Not(Operation):
             self.depth = parent_depth + 1
             self.x.depth(self.depth)
 
+    def children(self):
+        return [self.x]
 
 class Terminal(Operation):
     def __init__(self, identifier):
@@ -77,6 +89,8 @@ class Terminal(Operation):
         if self.depth == 0:
             self.depth = parent_depth + 1
 
+    def children(self):
+        return list()
 
 class Pass(Operation):
     def __init__(self, left, right):
@@ -88,6 +102,9 @@ class Pass(Operation):
 
     def depth(self, parent_depth = 0):
         parent_depth
+
+    def children(self):
+        return  [self.left, self.right]
 
 if __name__ == "__main__":
     input = And(Or(Or("x", And("y", "z")), "x"), Or("x", Not(And("a", "x"))))
