@@ -24,7 +24,6 @@ def gen_square(dim, x, y, z, width=5, height=4):
         for dx in range(height-2):
             dim.setBlock(x + dx + 1, y, z + dz + 1, sandstone)
 
-
 def gen_tower(dim, x, y, z, height, color="orange"):
     "Generate first input tower."
 
