@@ -17,8 +17,9 @@ def gen_input(dim, x, z, i):
 
     gen_square(dim, x, FLOOR_Y, z)
     color = COLORS[i % len(COLORS)]
+    wool = dim.blocktypes["minecraft:wool[color=%s]" % color]
 
-    dim.setBlock(x + 1, FLOOR_Y + 1, z + 2, "minecraft:wool[color=%s]" % color)
+    dim.setBlock(x + 1, FLOOR_Y + 1, z + 2, wool)
     dim.setBlock(x + 1, FLOOR_Y + 2, z + 2, "minecraft:lever[facing=up_x,powered=false]")
 
     wire = dim.blocktypes["minecraft:redstone_wire[east=none,north=none,power=0,south=none,west=none]"]
@@ -27,6 +28,11 @@ def gen_input(dim, x, z, i):
 
     height = i * 4
     gen_tower(dim, x + 6, FLOOR_Y + 1, z + 2, height, color)
+
+    dim.setBlock(x + 6, FLOOR_Y + height + 1, z + 2, wool)
+    dim.setBlock(x + 6, FLOOR_Y + height + 1, z + 1, wool)
+    dim.setBlock(x + 6, FLOOR_Y + height + 2, z + 2, wire)
+    dim.setBlock(x + 6, FLOOR_Y + height + 2, z + 1, wire)
 
 
 def gen_inputs(dim, n):
