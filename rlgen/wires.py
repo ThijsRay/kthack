@@ -59,14 +59,14 @@ def gen_input_wires(dim, x, y, z, i):
     dim.setBlock(x - 1, ty, z, wool)
     dim.setBlock(x - 1, ty + 1, z, repeater)
     gen_tower(dim, x, ty, z, y - ty, color)
-    
+
 def wire(dim,x1,z1,type1,x2,z2,type2):
     stone = dim.blocktypes["minecraft:sandstone"]
     wire = dim.blocktypes["minecraft:redstone_wire[east=none,north=none,power=0,south=none,west=none]"]
     difx = abs(x1-x2)
     dify = abs(z1-z2)
     floor = 250
-    new_x = x1*4 + 4*x1
+    new_x = -x1*4
     new_z = z1*5 + 4*z1
     for i in range(difx*2):
         dim.setBlock(new_x+i,floor,new_z + 2,stone)
@@ -75,11 +75,18 @@ def wire(dim,x1,z1,type1,x2,z2,type2):
     if(type2 == 1):
         ty = -1
     if(type2 == 3):
-        ty += 1
-    for j in range(dify*4 + ty):
-        dim.setBlock(new_x+2,floor,new_z+i + 2,stone)
-        dim.setBlock(new_x+2,floor+1,new_z+i + 2,wire)
-
-    for i in range(difx*2):
-        dim.setBlock(new_x+2+i,floor,new_z + 2,stone)
-        dim.setBlock(new_x+2+i,floor+1,new_z + 2,wire)
+        ty = 1
+    for j in range(dify*4 + ty + 4*dify):
+        dim.setBlock(new_x+2,floor,new_z-j + 2,stone)
+        dim.setBlock(new_x+2,floor+1,new_z-j + 2,wire)
+    newz = new_z + ty + 2
+    bouclex = 0
+    newx = new_x
+    if (dify != 0):
+        newz = new_z - dify*4 - dify*4 + 2
+    else :
+        bouclex = 1
+        newx = new_x - 1
+    for i in range(difx*2+ bouclex):
+        dim.setBlock(newx+2+i,floor,newz,stone)
+        dim.setBlock(newx+2+i,floor+1,newz,wire)

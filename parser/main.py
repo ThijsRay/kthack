@@ -11,7 +11,7 @@ class Operation:
 
 
 class And(Operation):
-    def __init__(self, x: Operation, y: Operation):
+    def __init__(self, x, y):
         self.x = x
         self.y = y
 
@@ -20,7 +20,7 @@ class And(Operation):
 
 
 class Or(Operation):
-    def __init__(self, x: Operation, y: Operation):
+    def __init__(self, x, y):
         self.x = x
         self.y = y
 
@@ -29,7 +29,7 @@ class Or(Operation):
 
 
 class Not(Operation):
-    def __init__(self, x: Operation):
+    def __init__(self, x):
         self.x = x
 
     def simplifly(self):
@@ -37,7 +37,7 @@ class Not(Operation):
 
 
 class Terminal(Operation):
-    def __init__(self, identifier: str):
+    def __init__(self, identifier):
         self.identifier = identifier
 
     def simplifly(self):
