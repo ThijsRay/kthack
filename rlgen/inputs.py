@@ -34,6 +34,9 @@ def gen_input(dim, x, z, i):
     dim.setBlock(x + 6, FLOOR_Y + height + 2, z + 2, wire)
     dim.setBlock(x + 6, FLOOR_Y + height + 2, z + 1, wire)
 
+    sign = dim.blocktypes["minecraft:standing_sign[rotation=0]"]
+    # dim.setBlock(x, FLOOR_Y, z + 2, sign)
+
 
 def gen_inputs(dim, n):
     "Generate inputs"
