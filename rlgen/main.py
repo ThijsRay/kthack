@@ -15,7 +15,8 @@ from mceditlib.worldeditor import WorldEditor
 
 
 # TODO: remove me.
-from .inputs import gen_input
+from .inputs import gen_inputs
+from .wires import gen_input_wires
 
 
 def load_empty_world():
@@ -24,6 +25,9 @@ def load_empty_world():
     root = path.abspath(path.join(path.dirname(__file__), ".."))
     folder = path.join(root, "assets", "EmptyMap")
     result = path.join(root, "MapResult")
+
+    shutil.rmtree(result, ignore_errors=True)
+    shutil.rmtree(path.join(root, "##MapResult.UNDO##"), ignore_errors=True)
 
     shutil.copytree(folder, result)
     return WorldEditor(result)
@@ -41,7 +45,9 @@ def main():
     dim = world.getDimension()
 
     # TODO: remove me.
-    gen_input(dim, 0, 0)
+    gen_inputs(dim, 200)
+
+    gen_input_wires(dim, 40, 30, -9, 1)
 
     world.saveChanges()
     # DO NOT CALL "world.close()"

@@ -8,6 +8,7 @@ __pycache__/
 GPUCache/
 New_World_Result/
 MapResult/
+\##MapResult.UNDO##/
 
 # C extensions
 *.so
