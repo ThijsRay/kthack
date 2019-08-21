@@ -54,3 +54,27 @@ def gen_input_wires(dim, x, y, z, i):
         repeater = dim.blocktypes["minecraft:unpowered_repeater[delay=1,facing=north,locked=false]"]
         dim.setBlock(tx, ty, tz, wool)
         dim.setBlock(tx, ty + 1, tz, wire)
+
+def wire(dim,x1,z1,type1,x2,z2,type2):
+    stone = dim.blocktypes["minecraft:sandstone"]
+    wire = dim.blocktypes["minecraft:redstone_wire[east=none,north=none,power=0,south=none,west=none]"]
+    difx = abs(x1-x2)
+    dify = abs(z1-z2)
+    floor = 250
+    new_x = x1*4 + 4*x1
+    new_z = z1*5 + 4*z1
+    for i in range(difx*2):
+        dim.setBlock(new_x+i,floor,new_z + 2,stone)
+        dim.setBlock(new_x+i,floor+1,new_z + 2 ,wire)
+    ty = 0
+    if(type2 == 1):
+        ty = -1
+    if(type2 == 3):
+        ty += 1
+    for j in range(dify*4 + ty):
+        dim.setBlock(new_x+2,floor,new_z+i + 2,stone)
+        dim.setBlock(new_x+2,floor+1,new_z+i + 2,wire)
+
+    for i in range(difx*2):
+        dim.setBlock(new_x+2+i,floor,new_z + 2,stone)
+        dim.setBlock(new_x+2+i,floor+1,new_z + 2,wire)

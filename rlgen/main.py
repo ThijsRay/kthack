@@ -17,7 +17,8 @@ from mceditlib.worldeditor import WorldEditor
 # TODO: remove me.
 from .inputs import gen_inputs
 from .wires import gen_input_wires
-
+from .block import gen_gate_from_tabs
+from .wires import wire
 
 def load_empty_world():
     "Load the empty world."
@@ -44,9 +45,12 @@ def main():
     dim = world.getDimension()
 
     # TODO: remove me.
-    gen_inputs(dim, 200)
-
-    gen_input_wires(dim, 40, 30, -9, 1)
-
+    # gen_inputs(dim, 200)
+    # gen_input_wires(dim, 40, 30, -9, 1)
+    gen_gate_from_tabs(dim,0,0,0)
+    gen_gate_from_tabs(dim,1,0,1)
+    gen_gate_from_tabs(dim,1,1,1)
+    wire(dim,1,0,2,0,0,1)
+    wire(dim,1,1,2,0,0,3)
     world.saveChanges()
     # DO NOT CALL "world.close()"

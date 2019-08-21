@@ -43,3 +43,12 @@ def my_not(dim,x,y,z):
     dim.setBlock(x+1,y+1,z+2,stone)
     stone = dim.blocktypes["minecraft:redstone_torch[facing=east]"]
     dim.setBlock(x+2,y+1,z+2,stone)
+
+
+def gen_gate_from_tabs(dim,x,z,types):
+    if(types == 0):
+        my_or(dim,-1*x*4-x*4,250,z*5+z*4)
+    if(types == 1):
+        my_and(dim,-1*x*4-x*4,250,z*5+z*4)
+    if(types == 2):
+        my_not(dim,-1*x*4-x*4,250,z*5+z*4)
