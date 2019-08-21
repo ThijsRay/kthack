@@ -22,7 +22,7 @@ def gen_tower(dim, x, y, z, height, color="orange"):
 
 
 
-def gen_straight_z_wire(dim, support, z1, z2, x, y):
+def gen_straight_z_wire(dim, support, z1, z2, x, y, align=4):
     "Generate a straight wire."
 
     wire = dim.blocktypes["minecraft:redstone_wire[east=none,north=none,power=0,south=none,west=none]"]
@@ -30,8 +30,16 @@ def gen_straight_z_wire(dim, support, z1, z2, x, y):
         dim.setBlock(x, y, tz, support)
         dim.setBlock(x, y + 1, tz, wire)
 
+    if z1 < z2:
+        repeater = dim.blocktypes["minecraft:unpowered_repeater[delay=1,facing=north,locked=false]"]
+    else:
+        repeater = dim.blocktypes["minecraft:unpowered_repeater[delay=1,facing=south,locked=false]"]
 
-def gen_straight_x_wire(dim, support, x1, x2, z, y):
+    for z in range(min(z1, z2) + align, max(z1, z2), 9):
+        dim.setBlock(x, y + 1, z, repeater)
+
+
+def gen_straight_x_wire(dim, support, x1, x2, z, y, align=4):
     "Generate a straight wire."
 
     wire = dim.blocktypes["minecraft:redstone_wire[east=none,north=none,power=0,south=none,west=none]"]
@@ -39,6 +47,13 @@ def gen_straight_x_wire(dim, support, x1, x2, z, y):
         dim.setBlock(tx, y, z, support)
         dim.setBlock(tx, y + 1, z, wire)
 
+    if x1 < x2:
+        repeater = dim.blocktypes["minecraft:unpowered_repeater[delay=1,facing=west,locked=false]"]
+    else:
+        repeater = dim.blocktypes["minecraft:unpowered_repeater[delay=1,facing=east,locked=false]"]
+
+    for x in range(min(x1, x2) + align, max(x1, x2), 8):
+        dim.setBlock(x, y + 1, z, repeater)
 
 
 def gen_input_wires(dim, x, y, z, i):
@@ -58,7 +73,8 @@ def gen_input_wires(dim, x, y, z, i):
     # Generate the final tower.
     dim.setBlock(x - 1, ty, z, wool)
     dim.setBlock(x - 1, ty + 1, z, repeater)
-    gen_tower(dim, x, ty, z, y - ty, color)
+    gen_tower(dim, x, ty + 1, z, y - ty, color)
+
 
 def wire(dim,x1,z1,type1,x2,z2,type2):
     stone = dim.blocktypes["minecraft:sandstone"]

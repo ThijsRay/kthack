@@ -69,23 +69,23 @@ class Or(Operation, Sugar):
         return "Or(%s, %s)" % (self.left, self.right)
 
 class Not(Operation, Sugar):
-    def __init__(self, x):
-        self.x = x  # Operation
+    def __init__(self, op):
+        self.op = op  # Operation
         self.depth = 0
 
     def desugar(self):
-        return Not(self.x.desugar())
+        return Not(self.op.desugar())
 
     def depth(self, parent_depth = 0):
         if self.depth == 0:
             self.depth = parent_depth + 1
-            self.x.depth(self.depth)
+            self.op.depth(self.depth)
 
     def children(self):
-        return [self.x]
+        return [self.op]
 
     def __str__(self):
-        return "Not(%s)" % (self.x)
+        return "Not(%s)" % (self.op)
 
 
 class Terminal(Operation, Sugar):
@@ -104,7 +104,7 @@ class Terminal(Operation, Sugar):
         return list()
 
     def __str__(self):
-        return "%s" % (self.identifier)
+        return "T[%s]" % (self.identifier)
 
 
 class Pass(Operation, Sugar):
