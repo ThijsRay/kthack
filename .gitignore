@@ -3,6 +3,13 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+# Other
+.vscode/
+GPUCache/
+New_World_Result/
+MapResult/
+\##MapResult.UNDO##/
+
 # C extensions
 *.so
 
@@ -102,3 +109,5 @@ venv.bak/
 
 # mypy
 .mypy_cache/
+
+**/.idea/**/**
