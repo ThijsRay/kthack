@@ -55,12 +55,11 @@ def gen_input_wires(dim, x, y, z, i):
 
     # Generate next route to gate z position.
     gen_straight_z_wire(dim, wool, tz, z, x - 2, ty)
-
-    else:
-        repeater = dim.blocktypes["minecraft:unpowered_repeater[delay=1,facing=north,locked=false]"]
-        dim.setBlock(tx, ty, tz, wool)
-        dim.setBlock(tx, ty + 1, tz, wire)
-
+    # Generate the final tower.
+    dim.setBlock(x - 1, ty, z, wool)
+    dim.setBlock(x - 1, ty + 1, z, repeater)
+    gen_tower(dim, x, ty, z, y - ty, color)
+    
 def wire(dim,x1,z1,type1,x2,z2,type2):
     stone = dim.blocktypes["minecraft:sandstone"]
     wire = dim.blocktypes["minecraft:redstone_wire[east=none,north=none,power=0,south=none,west=none]"]
