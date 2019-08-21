@@ -17,7 +17,6 @@ from mceditlib.worldeditor import WorldEditor
 from .inputs import gen_inputs
 from .wires import gen_input_wires
 from .block import gen_gate_from_tabs
-from .wires import wire
 
 from intermediate_representation.ast import *
 
@@ -57,11 +56,11 @@ def main():
 
     # gen_inputs(dim, 200)
     # gen_input_wires(dim, 40, 30, -9, 1)
-    gen_gate_from_tabs(dim,0,0,0)
-    gen_gate_from_tabs(dim,1,0,1)
-    gen_gate_from_tabs(dim,1,1,1)
-    wire(dim,1,0,2,0,0,1)
-    wire(dim,1,1,2,0,0,3)
+    # gen_gate_from_tabs(dim,0,0,0)
+    # gen_gate_from_tabs(dim,1,0,1)
+    # gen_gate_from_tabs(dim,1,1,1)
+    # wire(dim,1,0,2,0,0,1)
+    # wire(dim,1,1,2,0,0,3)
 
     from .api import gen_gates
     gen_gates(dim, tmp_exp())

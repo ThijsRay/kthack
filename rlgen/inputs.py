@@ -10,7 +10,6 @@ All rights reserved.
 from .constants import FLOOR_Y, COLORS, INPUT_TOWER_X
 from .utils import gen_square
 from .wires import gen_tower
-from .wires import wire
 
 def gen_input(dim, x, z, i):
     "Generate an input at the given coordinates."

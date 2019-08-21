@@ -21,3 +21,4 @@ INPUT_TOWER_DZ = 6
 # Gate settings.
 GATES_Y = 250
 GATES_X = 10
+GATES_X_SPACE = 20

@@ -7,6 +7,7 @@ All rights reserved.
 
 """
 
+from .constants import GATES_Y, GATES_X
 from .constants import FLOOR_Y, COLORS, INPUT_TOWER_X, INPUT_TOWER_Z, INPUT_TOWER_DZ
 
 
@@ -35,7 +36,7 @@ def gen_straight_z_wire(dim, support, z1, z2, x, y, align=4):
     else:
         repeater = dim.blocktypes["minecraft:unpowered_repeater[delay=1,facing=south,locked=false]"]
 
-    for z in range(min(z1, z2) + align, max(z1, z2), 9):
+    for z in range(min(z1, z2) + align, max(z1, z2) - 1, 9):
         dim.setBlock(x, y + 1, z, repeater)
 
 
@@ -74,35 +75,19 @@ def gen_input_wires(dim, x, y, z, i):
     dim.setBlock(x - 1, ty, z, wool)
     dim.setBlock(x - 1, ty + 1, z, repeater)
     gen_tower(dim, x, ty + 1, z, y - ty, color)
+    dim.setBlock(x, y + 1, z, wool)
 
 
-def wire(dim,x1,z1,type1,x2,z2,type2):
+def gen_gate_wire(dim, x1, z1, x2, z2, y, index, index2):
     stone = dim.blocktypes["minecraft:sandstone"]
     wire = dim.blocktypes["minecraft:redstone_wire[east=none,north=none,power=0,south=none,west=none]"]
-    difx = abs(x1-x2)
-    dify = abs(z1-z2)
-    floor = 250
-    new_x = -x1*4
-    new_z = z1*5 + 4*z1
-    for i in range(difx*2):
-        dim.setBlock(new_x+i,floor,new_z + 2,stone)
-        dim.setBlock(new_x+i,floor+1,new_z + 2 ,wire)
-    ty = 0
-    if(type2 == 1):
-        ty = -1
-    if(type2 == 3):
-        ty = 1
-    for j in range(dify*4 + ty + 4*dify):
-        dim.setBlock(new_x+2,floor,new_z-j + 2,stone)
-        dim.setBlock(new_x+2,floor+1,new_z-j + 2,wire)
-    newz = new_z + ty + 2
-    bouclex = 0
-    newx = new_x
-    if (dify != 0):
-        newz = new_z - dify*4 - dify*4 + 2
-    else :
-        bouclex = 1
-        newx = new_x - 1
-    for i in range(difx*2+ bouclex):
-        dim.setBlock(newx+2+i,floor,newz,stone)
-        dim.setBlock(newx+2+i,floor+1,newz,wire)
+
+    if z1 > z2:
+        X = x1 + (2 * index)
+    else:
+        X = x1 + (2 * index2)
+
+    gen_straight_x_wire(dim, stone, x1, X, z1, y)
+
+    gen_straight_z_wire(dim, stone, z1, z2, X, y)
+    gen_straight_x_wire(dim, stone, X, x2, z2, y)

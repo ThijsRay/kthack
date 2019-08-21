@@ -9,9 +9,10 @@ All rights reserved.
 
 from intermediate_representation.ast import *
 
-from .constants import GATES_Y, GATES_X
+from .constants import GATES_Y, GATES_X, GATES_X_SPACE
 from .inputs import gen_inputs
-from .wires import gen_input_wires
+from .wires import gen_input_wires, gen_gate_wire
+from .block import gen_gate_from_tabs
 
 
 # Golbal variables.
@@ -21,14 +22,32 @@ DIM = None
 def place_gate(x, z, gate):
     "Place a gate at the specific location."
 
-    # TODO.
+    if isinstance(gate, Terminal):
+        return  # Terminal is not a gate.
+
+    types = (Or, And, Not)
+    x = GATES_X + x * (4 + GATES_X_SPACE) + 1
+    z = z * (5 + 4) - 2
+    gen_gate_from_tabs(DIM, x, GATES_Y, z, types.index(gate.__class__))
 
 
-def wire_g2g(ox, oz, ing, inum):
+def wire_g2g(ox, oz, ing, inum, index, index2):
     "Make a gate-to-gate wire"
 
     if isinstance(ing, Terminal):
         return  # Terminal is not a gate.
+
+    ox = GATES_X + ox * (4 + GATES_X_SPACE)
+    ix = GATES_X + ing.x * (4 + GATES_X_SPACE) + 5
+    oz = oz * (5 + 4)
+    iz = ing.z * (5 + 4)
+
+    if inum == 1:
+        oz -= 1
+    elif inum == 3:
+        oz += 1
+
+    gen_gate_wire(DIM, ix, iz, ox, oz, GATES_Y, index, index2)
 
 
 def wire_i2g(ox, oz, ing, inum, inputs):
@@ -38,8 +57,13 @@ def wire_i2g(ox, oz, ing, inum, inputs):
         return
 
     idx = inputs.index(ing.identifier)
-    x = GATES_X + ox * (4 + 4)
+    x = GATES_X + ox * (4 + GATES_X_SPACE)
     z = oz * (5 + 4)
+
+    if inum == 1:
+        z -= 1
+    elif inum == 3:
+        z += 1
 
     gen_input_wires(DIM, x, GATES_Y, z, idx)
 
@@ -72,10 +96,10 @@ def gen_g2g_wires(exp):
     ch = exp.children()
 
     if len(ch) == 1:
-        wire_g2g(exp.x, exp.z, ch[0], 2)
+        wire_g2g(exp.x, exp.z, ch[0], 2, ch[0].index, ch[0].index2)
     elif len(ch) == 2:
-        wire_g2g(exp.x, exp.z, ch[0], 1)
-        wire_g2g(exp.x, exp.z, ch[1], 3)
+        wire_g2g(exp.x, exp.z, ch[0], 1, ch[0].index, ch[0].index2)
+        wire_g2g(exp.x, exp.z, ch[1], 3, ch[1].index, ch[1].index2)
 
     for child in exp.children():
         gen_g2g_wires(child)
@@ -100,6 +124,7 @@ def gen_i2g_wires(exp, inputs):
 def gen_gates(dim, exp):
     "Generate all gates from input expression."
 
+    print(exp)
     global DIM
     DIM = dim
 
@@ -116,6 +141,8 @@ def gen_gates(dim, exp):
         for z, cell in enumerate(column):
             cell.x = x
             cell.z = z
+            cell.index = z
+            cell.index2 = len(column) - z
             place_gate(x, z, cell)
 
     # Generate gate to gate wires.

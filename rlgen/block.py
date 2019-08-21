@@ -1,9 +1,9 @@
 from mceditlib.worldeditor import WorldEditor
-import parser
-from parser import *
 import constants
 import utils 
 from utils import gen_square
+
+
 def gate_base(dim,x,y,z):
     gen_square(dim, x, y, z, width=5, height=4)
     stone = dim.blocktypes["minecraft:unpowered_repeater[delay=1,facing=west,locked=false]"]
@@ -45,10 +45,10 @@ def my_not(dim,x,y,z):
     dim.setBlock(x+2,y+1,z+2,stone)
 
 
-def gen_gate_from_tabs(dim,x,z,types):
+def gen_gate_from_tabs(dim,x,y,z,types):
     if(types == 0):
-        my_or(dim,-1*x*4-x*4,250,z*5+z*4)
+        my_or(dim,x,y,z)
     if(types == 1):
-        my_and(dim,-1*x*4-x*4,250,z*5+z*4)
+        my_and(dim,x,y,z)
     if(types == 2):
-        my_not(dim,-1*x*4-x*4,250,z*5+z*4)
+        my_not(dim,x,y,z)
