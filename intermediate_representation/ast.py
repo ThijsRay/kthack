@@ -4,15 +4,15 @@
 #   Not(x)
 #   Terminal variables
 
-from
+class Sugar:
+    def desugar(self):
+        raise NotImplementedError("Class %s doesn't implement desugar()" % (self.__class__.__name__))
+
 
 class Operation:
     """
     Class that defines the AST types
     """
-    def simplify(self):
-        raise NotImplementedError("Class %s doesn't implement simplify()" % (self.__class__.__name__))
-
     def depth(self):
         raise NotImplementedError("Class %s doesn't implement depth()" % (self.__class__.__name__))
 
@@ -23,51 +23,58 @@ class Operation:
         raise NotImplementedError("Class %s doesn't implement children()" % (self.__class__.__name__))
 
 
-class And(Operation):
-    def __init__(self, x, y):
-        self.x = x  # Operation
-        self.y = y  # Operation
+class And(Operation, Sugar):
+    def __init__(self, left, right):
+        self.left = left  # Operation
+        self.right = right  # Operation
         self.depth = 0
 
-    def simplify(self):
-        return And(self.x.simplify(), self.y.simplify())
+    def desugar(self):
+        return And(self.left.desugar(), self.right.desugar())
 
     def depth(self, parent_depth = 0):
         if self.depth == 0:
             self.depth = parent_depth + 1
-            self.x.depth(self.depth)
-            self.y.depth(self.depth)
+            self.left.depth(self.depth)
+            self.right.depth(self.depth)
         return self.depth
 
     def children(self):
-        return [self.x, self.y]
+        return [self.left, self.right]
 
-class Or(Operation):
-    def __init__(self, x, y):
-        self.x = x  # Operation
-        self.y = y  # Operation
+    def __str__(self):
+        return "And(%s, %s)" % (self.left, self.right)
+
+
+class Or(Operation, Sugar):
+    def __init__(self, left, right):
+        self.left = left  # Operation
+        self.right = right  # Operation
         self.depth = 0
 
-    def simplify(self):
-        return Or(self.x.simplify(), self.y.simplify())
+    def desugar(self):
+        return Or(self.left.desugar(), self.right.desugar())
 
     def depth(self, parent_depth = 0):
         if self.depth == 0:
             self.depth = parent_depth + 1
-            self.x.depth(self.depth)
-            self.y.depth(self.depth)
+            self.left.depth(self.depth)
+            self.right.depth(self.depth)
         return self.depth
 
     def children(self):
-        return [self.x, self.y]
+        return [self.left, self.right]
 
-class Not(Operation):
+    def __str__(self):
+        return "Or(%s, %s)" % (self.left, self.right)
+
+class Not(Operation, Sugar):
     def __init__(self, x):
         self.x = x  # Operation
         self.depth = 0
 
-    def simplify(self):
-        return Not(self.x.simplify())
+    def desugar(self):
+        return Not(self.x.desugar())
 
     def depth(self, parent_depth = 0):
         if self.depth == 0:
@@ -77,12 +84,16 @@ class Not(Operation):
     def children(self):
         return [self.x]
 
-class Terminal(Operation):
+    def __str__(self):
+        return "Not(%s)" % (self.x)
+
+
+class Terminal(Operation, Sugar):
     def __init__(self, identifier):
         self.identifier = identifier  # String
         self.depth = 0
 
-    def simplify(self):
+    def desugar(self):
         return self
 
     def depth(self, parent_depth = 0):
@@ -92,22 +103,42 @@ class Terminal(Operation):
     def children(self):
         return list()
 
-class Pass(Operation):
+    def __str__(self):
+        return "%s" % (self.identifier)
+
+
+class Pass(Operation, Sugar):
     def __init__(self, left, right):
         self.left = left
         self.right = right
 
-    def simplify(self):
-        return Pass(self.left.simplify(), self.right.simplify())
+    def desugar(self):
+        return Pass(self.left.desugar(), self.right.desugar())
 
     def depth(self, parent_depth = 0):
         parent_depth
 
     def children(self):
-        return  [self.left, self.right]
+        return [self.left, self.right]
+
+    def __str__(self):
+        return "Pass(%s, %s)" % (self.left, self.right)
+
+
+class Xor(Sugar):
+    def __init__(self, left, right):
+        self.left = left
+        self.right = right
+
+    def desugar(self):
+        return Or(And(self.left.desugar(), Not(self.right.desugar())), And(Not(self.left.desugar()), self.right.desugar()))
+
 
 if __name__ == "__main__":
-    input = And(Or(Or("x", And("y", "z")), "x"), Or("x", Not(And("a", "x"))))
-    input.simplify()
+    input = Pass(
+        Xor(Terminal("Cin"), Xor(Terminal("A"), Terminal("B"))),
+        Or(And(Terminal("A"), Terminal("B")), And(Terminal("Cin"), Xor(Terminal("A"), Terminal("B"))))
+    )
+    input = input.desugar()
 
-    print("Hey")
+    print(str(input))
