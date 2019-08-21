@@ -46,7 +46,7 @@ def main():
     # TODO: remove me.
     gen_inputs(dim, 200)
 
-    gen_input_wires(dim, 40, 30, -9, 1)
+    gen_input_wires(dim, 40, 80, -9, 1)
 
     world.saveChanges()
     # DO NOT CALL "world.close()"
