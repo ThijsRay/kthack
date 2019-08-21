@@ -15,11 +15,14 @@ def gen_tower(dim, x, y, z, height, color="orange"):
     "Generate first input tower."
 
     whool = dim.blocktypes["minecraft:wool[color=%s]" % color]
-    torch = dim.blocktypes["minecraft:redstone_torch[facing=up]"]
+    torch1 = dim.blocktypes["minecraft:redstone_torch[facing=up]"]
+    torch2 = dim.blocktypes["minecraft:unlit_redstone_torch[facing=up]"]
 
-    for dy in range(0, height, 2):
+    for dy in range(0, height, 4):
         dim.setBlock(x, y + dy, z, whool)
-        dim.setBlock(x, y + dy + 1, z, torch)
+        dim.setBlock(x, y + dy + 1, z, torch1)
+        dim.setBlock(x, y + dy + 2, z, whool)
+        dim.setBlock(x, y + dy + 3, z, torch2)
 
 
 
